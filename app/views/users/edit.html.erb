@@ -1,0 +1,26 @@
+<h2>登録内容の編集</h2>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for(@user) do |f| %>
+
+      <%= render 'shared/error_messages', object: f.object %>
+      <%= f.label :name, "名前" %>
+      <%= f.text_field :name, class: 'form-control' %>
+
+      <%= f.label :email, "Eメールアドレス" %>
+      <%= f.text_field :email, class: 'form-control' %>
+
+      <%= f.label :address, "住所(都道府県名から)" %>
+      <%= f.text_field :address, class: 'form-control' %>
+
+      <%= f.label :password, "パスワード" %>
+      <%= f.password_field :password, class: 'form-control' %>
+
+      <%= f.label :password_confirmation, "パスワード(確認)" %>
+      <%= f.password_field :password_confirmation, class: 'form-control' %>
+
+      <%= f.submit "上記内容に更新", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>

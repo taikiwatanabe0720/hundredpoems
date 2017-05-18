@@ -1,5 +1,20 @@
 Rails.application.routes.draw do
-  get 'top_pages#home'
+  
+
+  get 'sessions/new'
+
+  root to: 'top_pages#home'
+  get 'signup', to: 'users#new'
+  get    'login' , to: 'sessions#new'
+  post   'login' , to: 'sessions#create'
+  delete 'logout', to: 'sessions#destroy'
+  get 'about' , to: 'top_pages#app'
+  get 'hundredpoem' , to: 'top_pages#hundred'
+  
+  resources :users do
+    # /users/:id/経路
+    get 'travel'
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

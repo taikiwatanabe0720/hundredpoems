@@ -1,0 +1,60 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewpoint" content="width=device-width, initial-scale=1">
+</head>
+
+
+<body>
+<h1>歌枕への行き方</h1>
+
+<h2>経路</h2>
+  <table border=1>
+    <tr>
+      <th></th>
+      <th>駅名　(県名)</th>
+    </tr>
+    <tr>
+      <td width= 150>自宅最寄り駅</td>
+      <td width= 200><%= @station_h + '駅　(' + @str_pref_h + ')' %></td>
+    </tr>
+    <tr>
+      <td width=150>目的地最寄り駅</td>
+      <td width=200><%= @station_d + '駅　(' + @str_pref_d + ')' %></td>
+    </tr>
+  </table>
+<%= link_to '歌枕までの電車乗り換え', @ResourceURL %>
+
+
+<h2>目的地周辺の情報</h2>
+<h3>目的地最寄りのホテル</h3>
+  <% if @hotel_info.nil? %>
+    ※目的地の半径3km範囲内にはホテルはりません。
+  <% else %>
+    <table border=1>
+      <thead>
+        <tr>
+          <th>写真</th>
+          <th>ホテル名</th>
+          <th>住所</th>
+          <th>参考料金</th>
+          <th>チェックイン時間</th>
+          <th>説明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @hotel_info.each do |h| %>
+        <tr>
+          <td width=70><%= image_tag h['PictureURL'] %></td>
+          <td width=300><%= link_to h['HotelName'], h['HotelDetailURL'] %></td>
+          <td width=200><%= h['HotelAddress'] %></td>
+          <td width=80 align="center"><%= h['SampleRateFrom'] %></td>
+          <td width=80><%= h['CheckInTime'] %></td>
+          <td width=300><%= h['HotelCatchCopy'] %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+  
+</body>

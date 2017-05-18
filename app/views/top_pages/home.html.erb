@@ -1,2 +1,17 @@
-<h1>TopPages#home</h1>
-<p>Find me in app/views/top_pages/home.html.erb</p>
+<% if logged_in? %>
+  <h2>歌を選んでください</h2>
+  <% @destinations.each_with_index do |d, index| %>
+    <table border=0>
+      <tr>
+        <td width=70><%= d.pid %>番歌　</td>
+        <td width=500><%= link_to d.name, user_travel_path(user_id: current_user.id, poem_id: d.pid) %></td>
+        <% num = sprintf("%003d", d.pid) %>
+        <td width=50><%= link_to '解説', "http://www.rakuten.ne.jp/gold/ogurasansou/hyakunin/#{num}.html" %></td>
+      </tr>
+    </table>
+  <% end %>
+  <%= paginate @destinations %>
+<% else %>
+  <h1>まずはログインをお願いします</h1>
+<% end %>
+
