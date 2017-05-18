@@ -54,6 +54,9 @@ gem 'faraday'
 # ページネーション用
 gem 'kaminari'
 
+# デバッグ用
+gem 'rails_12factor'
+
 group :development do
   gem 'pry-rails'
   gem 'pry-byebug'
