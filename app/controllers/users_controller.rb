@@ -34,7 +34,10 @@ class UsersController < ApplicationController
     user_station
     destination_station
     search_hotel
-    ekispert
+    if @stations_home['result'].nil? || @stations_des['result'].nil?
+    else
+      ekispert
+    end
   end
 
 
@@ -80,7 +83,7 @@ class UsersController < ApplicationController
   end
   
   def destination_station
-    @des = Destination.find(params[:poem_id])
+    @des = Destination.find_by(pid: params[:poem_id])
     @des_lng = @des.longitude
     @des_lat = @des.latitude
     
@@ -106,9 +109,9 @@ class UsersController < ApplicationController
     @route = @directions['routes'].first
   end
   
+  
   def ekispert
     key3 = Rails.application.secrets.ekispert_key
-    
     
     # 自宅の県名を抽出  #.class
     if @stations_home['result']['station'].class == Hash then
@@ -136,8 +139,14 @@ class UsersController < ApplicationController
           from_code = s["Station"]["code"]
         end
       end
+      if from_code.nil?
+        res_h_arr.each do |s|
+          if s['Station']['Name'].include?(@station_h + '(') && s['Prefecture']['Name'] == @str_pref_h
+            from_code = s["Station"]["code"]
+          end
+        end
+      end
     end
-    
     # 目的地の県名を抽出
     if @stations_des['result']['station'].class == Hash then
       @str_pref_d = @stations_des['result']['station']['prefecture']
@@ -183,8 +192,15 @@ class UsersController < ApplicationController
       to_code = res_d_arr["Station"]["code"]
     else
       res_d_arr.each_with_index do |s, index|
-        if ( s['Station']['Name'] == @station_d || s['Station']['Name'] == @station_d + '(' + @str_pref_d + ')' ) && s['Prefecture']['Name'] == @str_pref_d
+        if ( s['Station']['Name'] == @station_d || s['Station']['Name'] == @station_d + '(' + @str_pref_d + ')') && s['Prefecture']['Name'] == @str_pref_d
           to_code = s["Station"]["code"]
+        end
+      end
+      if to_code.nil?
+        res_d_arr.each do |s|
+          if s['Station']['Name'].include?(@station_d + '(') && s['Prefecture']['Name'] == @str_pref_d
+            to_code = s["Station"]["code"]
+          end
         end
       end
     end
@@ -195,7 +211,7 @@ class UsersController < ApplicationController
   
   def search_hotel
     # 緯度経度の座標変換　(世界測地系→日本測地系)
-    @des = Destination.find(params[:poem_id])
+    @des = Destination.find_by(pid: params[:poem_id])
     @des_lat_ja = @des.latitude * 1.000106961 - @des.longitude * 0.000017467 - 0.004602017
     @des_lng_ja = @des.longitude * 1.000083049 + @des.latitude * 0.000046047 - 0.010041046
     
@@ -214,5 +230,8 @@ class UsersController < ApplicationController
     # XML 形式で返ってきた結果を取得する
     @hotel = Hash.from_xml(@response_jaran.body)
     @hotel_info = @hotel['Results']['Hotel']
+    if @hotel_info.class == Hash
+      @hotel_info = [@hotel_info]
+    end
   end
 end

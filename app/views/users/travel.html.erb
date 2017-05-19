@@ -7,29 +7,35 @@
 
 <body>
 <h1>歌枕への行き方</h1>
-
-<h2>経路</h2>
-  <table border=1>
-    <tr>
-      <th></th>
-      <th>駅名　(県名)</th>
-    </tr>
-    <tr>
-      <td width= 150>自宅最寄り駅</td>
-      <td width= 200><%= @station_h + '駅　(' + @str_pref_h + ')' %></td>
-    </tr>
-    <tr>
-      <td width=150>目的地最寄り駅</td>
-      <td width=200><%= @station_d + '駅　(' + @str_pref_d + ')' %></td>
-    </tr>
-  </table>
-<%= link_to '歌枕までの電車乗り換え', @ResourceURL %>
-
+<% if @stations_home['result'].nil? %>
+  <p>自宅から自宅最寄り駅までの距離が徒歩90分を超えています。</p>
+  <p>自動車での移動をお勧めします。</p>
+<% elsif @stations_des['result'].nil? %>
+  <p>目的地から目的地最寄り駅までの距離が徒歩90分を超えています。</p>
+  <p>自動車での移動をお勧めします。</p>
+<% else %>
+  <h2>経路</h2>
+    <table border=1>
+      <tr>
+        <th></th>
+        <th>駅名　(県名)</th>
+      </tr>
+      <tr>
+        <td width= 150>自宅最寄り駅</td>
+        <td width= 200><%= @station_h + '駅　(' + @str_pref_h + ')' %></td>
+      </tr>
+      <tr>
+        <td width=150>目的地最寄り駅</td>
+        <td width=200><%= @station_d + '駅　(' + @str_pref_d + ')' %></td>
+      </tr>
+    </table>
+  <%= link_to '歌枕までの電車乗り換え', @ResourceURL %>
+<% end %>
 
 <h2>目的地周辺の情報</h2>
 <h3>目的地最寄りのホテル</h3>
   <% if @hotel_info.nil? %>
-    ※目的地の半径3km範囲内にはホテルはりません。
+    <p>目的地の半径3km範囲内にはホテルはりません。</p>
   <% else %>
     <table border=1>
       <thead>
