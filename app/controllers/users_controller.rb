@@ -112,8 +112,6 @@ class UsersController < ApplicationController
   
   
   def ekispert
-    key3 = Rails.application.secrets.ekispert_key
-    
     # 自宅の県名を抽出  #.class
     if @stations_home['result']['station'].class == Hash then
       @str_pref_h = @stations_home['result']['station']['prefecture']
@@ -129,7 +127,7 @@ class UsersController < ApplicationController
       @station_h = @sta_h_arr[0]['name']
     end
     @station_h.slice!(@station_h.index('駅'))
-    url_str_h = 'http://api.ekispert.jp/v1/json/station/light?key=' + key3 + '&name=' + @station_h
+    url_str_h = 'http://api.ekispert.jp/v1/json/station/light?key=' + Rails.application.secrets.ekispert_key + '&name=' + @station_h
     @res_h = Faraday.get(url_str_h)
     @res_h_arr = JSON.parse(@res_h.body)["ResultSet"]["Point"]
     if @res_h_arr.class == Hash then
@@ -163,7 +161,7 @@ class UsersController < ApplicationController
       @station_d = @sta_d_arr[0]['name']
     end
     @station_d.slice!(@station_d.index('駅'))
-    url_str_d = 'http://api.ekispert.jp/v1/json/station/light?key=' + key3 + '&name=' + @station_d
+    url_str_d = 'http://api.ekispert.jp/v1/json/station/light?key=' + Rails.application.secrets.ekispert_key + '&name=' + @station_d
     @res_d = Faraday.get(url_str_d)
 
     
@@ -186,7 +184,7 @@ class UsersController < ApplicationController
       end
     end
     
-    url_str_r = 'http://api.ekispert.jp/v1/json/search/course/light?key='+ key3 + '&from=' + from_code + '&to=' + to_code
+    url_str_r = 'http://api.ekispert.jp/v1/json/search/course/light?key='+ Rails.application.secrets.ekispert_key + '&from=' + from_code + '&to=' + to_code
     @ResourceURL = JSON.parse(Faraday.get(url_str_r).body)["ResultSet"]["ResourceURI"]
   end
   
@@ -200,9 +198,7 @@ class UsersController < ApplicationController
     @des_lng_int = (@des_lng_ja * 3600000).to_i
     
     # APIを呼び出すURLを作成
-    key2 = Rails.application.secrets.jaran_key
-
-    @jaran_url = 'http://jws.jalan.net/APIAdvance/HotelSearch/V1/?order=4&xml_ptn=1&pict_size=0&key=' + key2 + '&x=' + @des_lng_int.to_s + '&y=' + @des_lat_int.to_s + '&range=3'
+    @jaran_url = 'http://jws.jalan.net/APIAdvance/HotelSearch/V1/?order=4&xml_ptn=1&pict_size=0&key=' + Rails.application.secrets.jaran_key + '&x=' + @des_lng_int.to_s + '&y=' + @des_lat_int.to_s + '&range=3'
     @escaped_url_jaran = URI.escape(@jaran_url)
 
     # API を呼び出す
@@ -217,7 +213,6 @@ class UsersController < ApplicationController
   end
   
   def search_des_sta_lanlng
-    key4 = Rails.application.secrets.googleapi_js_key
     # APIを呼び出すURLを作成
     if @res_d_arr.class == Hash
       @yomi = @res_d_arr['Station']['Yomi']
@@ -240,7 +235,7 @@ class UsersController < ApplicationController
     else
       @keyword_sta = @yomi
     end
-    @search_latlng_url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + @keyword_sta + "&region=jp&key=AIzaSyD1SRDqRw7HzuF9u6bxLgWHIF-m4RKeIBQ"
+    @search_latlng_url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + @keyword_sta + "&region=jp&key=" + Rails.application.secrets.googleapi_js_key
     @escaped_url_search_latlng = URI.escape(@search_latlng_url)
     
     # APIを呼び出し結果を出力
