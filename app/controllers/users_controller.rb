@@ -240,7 +240,7 @@ class UsersController < ApplicationController
     else
       @keyword_sta = @yomi
     end
-    @search_latlng_url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + @keyword_sta + "&region=jp&key=" + key4
+    @search_latlng_url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + @keyword_sta + "&region=jp&key=AIzaSyD1SRDqRw7HzuF9u6bxLgWHIF-m4RKeIBQ"
     @escaped_url_search_latlng = URI.escape(@search_latlng_url)
     
     # APIを呼び出し結果を出力
