@@ -2,19 +2,33 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewpoint" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <title>歌枕へのアクセス</title>
+  <style>
+    #map {
+      height: 100%
+    }
+    html, body {
+      height: 100%
+
+    }
+  </style>
 </head>
 
 
 <body>
-<h1>歌枕への行き方</h1>
+  <h1>歌枕への行き方</h1>
 <% if @stations_home['result'].nil? %>
   <p>自宅から自宅最寄り駅までの距離が徒歩90分を超えています。</p>
   <p>自動車での移動をお勧めします。</p>
+
 <% elsif @stations_des['result'].nil? %>
   <p>目的地から目的地最寄り駅までの距離が徒歩90分を超えています。</p>
   <p>自動車での移動をお勧めします。</p>
+
 <% else %>
   <h2>経路</h2>
+    <h3>目的地最寄り駅までの経路</h3>
     <table border=1>
       <tr>
         <th></th>
@@ -30,10 +44,43 @@
       </tr>
     </table>
   <%= link_to '歌枕までの電車乗り換え', @ResourceURL %>
+  <br>
+  <br>
+  <h3>目的地最寄り駅からのルート</h3>
+  <div id="map" style="width: 800px; height: 600px;"></div>
+  <script>
+    function initMap() {
+      var directionsService = new google.maps.DirectionsService;
+      var directionsDisplay = new google.maps.DirectionsRenderer;
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: {lat: <%= @des_lat %>, lng: <%= @des_lng %>}
+      });
+      directionsDisplay.setMap(map);
+      calculateAndDisplayRoute(directionsService, directionsDisplay);
+    }
+      
+    function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+      directionsService.route({
+        origin: new google.maps.LatLng(<%= @LatLng_des_station['lat'] %>, <%= @LatLng_des_station['lng'] %>, false),
+        destination: new google.maps.LatLng(<%= @des_lat %>, <%= @des_lng %>, false),
+        travelMode: 'DRIVING'
+      }, function(response, status) {
+        if (status === 'OK') {
+          directionsDisplay.setDirections(response);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+        }
+      });
+    }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?callback=initMap">   
+  </script>
 <% end %>
 
-<h2>目的地周辺の情報</h2>
-<h3>目的地最寄りのホテル</h3>
+  <h2>目的地周辺の情報</h2>
+  <h3>目的地最寄りのホテル</h3>
   <% if @hotel_info.nil? %>
     <p>目的地の半径3km範囲内にはホテルはありません。</p>
   <% else %>
@@ -62,5 +109,4 @@
       </tbody>
     </table>
   <% end %>
-  
 </body>

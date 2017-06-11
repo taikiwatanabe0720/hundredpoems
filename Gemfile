@@ -57,6 +57,9 @@ gem 'kaminari'
 # デバッグ用
 gem 'rails_12factor'
 
+# GoogleMAP 起動用
+gem 'gmaps4rails'
+
 group :development do
   gem 'pry-rails'
   gem 'pry-byebug'

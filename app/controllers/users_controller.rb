@@ -37,6 +37,7 @@ class UsersController < ApplicationController
     if @stations_home['result'].nil? || @stations_des['result'].nil?
     else
       ekispert
+      search_des_sta_lanlng
     end
   end
 
@@ -140,7 +141,7 @@ class UsersController < ApplicationController
         end
       end
       if from_code.nil?
-        res_h_arr.each do |s|
+        @res_h_arr.each do |s|
           if s['Station']['Name'].include?(@station_h + '(') && s['Prefecture']['Name'] == @str_pref_h
             from_code = s["Station"]["code"]
           end
@@ -154,50 +155,30 @@ class UsersController < ApplicationController
       @str_pref_d = @stations_des['result']['station'][0]['prefecture']
     end
     # 目的地最寄り駅リストを取得
-    sta_d_arr = @stations_des['result']['station']
+    @sta_d_arr = @stations_des['result']['station']
     # 目的地最寄り駅の名前を取得
-    if sta_d_arr.class == Hash then
-      @station_d = sta_d_arr['name']
-    elsif sta_d_arr.class == Array then
-      @station_d = sta_d_arr[0]['name']
+    if @sta_d_arr.class == Hash then
+      @station_d = @sta_d_arr['name']
+    elsif @sta_d_arr.class == Array then
+      @station_d = @sta_d_arr[0]['name']
     end
     @station_d.slice!(@station_d.index('駅'))
     url_str_d = 'http://api.ekispert.jp/v1/json/station/light?key=' + key3 + '&name=' + @station_d
     @res_d = Faraday.get(url_str_d)
 
-    #
-    # @res_d.body
-    # 
-    # {
-    #     "ResultSet": {
-    #         "apiVersion": "1.27.0.0",
-    #         "engineVersion": "201705_02a",
-    #         "Point": {
-    #             "Station": {
-    #                 "code": "25491",
-    #                 "Name": "近江神宮前",
-    #                 "Type": "train",
-    #                 "Yomi": "おうみじんぐうまえ"
-    #             },
-    #             "Prefecture": {
-    #                 "code": "25",
-    #                 "Name": "滋賀県"
-    #             }
-    #         }
-    #     }
-    # }
-    res_d_arr = JSON.parse(@res_d.body)["ResultSet"]["Point"]
     
-    if res_d_arr.class == Hash then
-      to_code = res_d_arr["Station"]["code"]
+    @res_d_arr = JSON.parse(@res_d.body)["ResultSet"]["Point"]
+    
+    if @res_d_arr.class == Hash then
+      to_code = @res_d_arr["Station"]["code"]
     else
-      res_d_arr.each_with_index do |s, index|
+      @res_d_arr.each_with_index do |s, index|
         if ( s['Station']['Name'] == @station_d || s['Station']['Name'] == @station_d + '(' + @str_pref_d + ')') && s['Prefecture']['Name'] == @str_pref_d
           to_code = s["Station"]["code"]
         end
       end
       if to_code.nil?
-        res_d_arr.each do |s|
+        @res_d_arr.each do |s|
           if s['Station']['Name'].include?(@station_d + '(') && s['Prefecture']['Name'] == @str_pref_d
             to_code = s["Station"]["code"]
           end
@@ -233,5 +214,37 @@ class UsersController < ApplicationController
     if @hotel_info.class == Hash
       @hotel_info = [@hotel_info]
     end
+  end
+  
+  def search_des_sta_lanlng
+    key4 = Rails.application.secrets.googleapi_js_key
+    # APIを呼び出すURLを作成
+    if @res_d_arr.class == Hash
+      @yomi = @res_d_arr['Station']['Yomi']
+    else
+      @res_d_arr.each_with_index do |s, index|
+        if ( s['Station']['Name'] == @station_d || s['Station']['Name'] == @station_d + '(' + @str_pref_d + ')') && s['Prefecture']['Name'] == @str_pref_d
+          @yomi = s["Station"]["Yomi"]
+        end
+      end
+      if @yomi.nil?
+        @res_d_arr.each do |s|
+          if s['Station']['Name'].include?(@station_d + '(') && s['Prefecture']['Name'] == @str_pref_d
+            @yomi = s["Station"]["Yomi"]
+          end
+        end
+      end
+    end
+    if @yomi.length < 2 || @yomi.index("えき").nil?
+      @keyword_sta = @yomi + 'えき'
+    else
+      @keyword_sta = @yomi
+    end
+    @search_latlng_url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + @keyword_sta + "&region=jp&key=" + key4
+    @escaped_url_search_latlng = URI.escape(@search_latlng_url)
+    
+    # APIを呼び出し結果を出力
+    @LatLng_des_station = JSON.parse(Faraday.get(@escaped_url_search_latlng).body)['results'][0]['geometry']['location']
+    @tmp = JSON.parse(Faraday.get(@escaped_url_search_latlng).body)['results']
   end
 end
