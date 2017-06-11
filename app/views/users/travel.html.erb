@@ -75,7 +75,7 @@
     }
   </script>
   <script async defer
-    src="https://maps.googleapis.com/maps/api/js?callback=initMap">   
+    src="https://maps.googleapis.com/maps/api/js?callback=initMap&key="<%= Rails.application.secrets.googleapi_js_key %>>   
   </script>
 <% end %>
 
