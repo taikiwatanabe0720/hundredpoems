@@ -38,6 +38,7 @@ class UsersController < ApplicationController
     else
       ekispert
       search_des_sta_lanlng
+      @api_key = Rails.application.secrets.googleapi_js_key
     end
   end
 
