@@ -95,9 +95,9 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.14.4)
     multipart-post (2.1.1)
-    mysql2 (0.5.2)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
+    pg (0.21.0)
     rack (1.6.13)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -190,7 +190,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   kaminari
-  mysql2
+  pg (~> 0.18)
   rails (= 4.2.8)
   rails_12factor
   sass-rails (~> 5.0)
