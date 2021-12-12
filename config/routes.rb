@@ -4,10 +4,10 @@ Rails.application.routes.draw do
   get 'sessions/new'
 
   root to: 'top_pages#home'
-  get 'signup', to: 'users#new'
-  get    'login' , to: 'sessions#new'
-  post   'login' , to: 'sessions#create'
-  delete 'logout', to: 'sessions#destroy'
+  get 'sign_up', to: 'users#new'
+  get    'sign_in' , to: 'sessions#new'
+  post   'sign_in' , to: 'sessions#create'
+  delete 'sign_out', to: 'sessions#destroy'
   get 'about' , to: 'top_pages#app'
   get 'hundredpoem' , to: 'top_pages#hundred'
   

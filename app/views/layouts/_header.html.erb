@@ -17,13 +17,13 @@
               <li><%= link_to "登録内容変更", edit_user_path(current_user) %></li>
               <li class="divider"></li>
               <li>
-                <%= link_to "ログアウト", logout_path, method: "delete" %>
+                <%= link_to "ログアウト", sign_out_path, method: "delete" %>
               </li>
             </ul>
           </li>
         <% else %>
-          <li><%= link_to "ログイン", login_path %></li>
-          <li><%= link_to "新規登録", signup_path %></li>
+          <li><%= link_to "ログイン", sign_in_path %></li>
+          <li><%= link_to "新規登録", sign_up_path %></li>
         <% end %>
         
       </ul>
