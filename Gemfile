@@ -61,3 +61,5 @@ gem 'rails_12factor'
 # GoogleMAP 起動用
 gem 'gmaps4rails'
 
+# ログイン機能用
+gem 'devise'
