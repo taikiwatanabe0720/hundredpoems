@@ -5,22 +5,22 @@
     <%= form_for(@user) do |f| %>
 
       <%= render 'shared/error_messages', object: f.object %>
-      <%= f.label :name, "名前" %>
+      <%= f.label :name, "name" %>
       <%= f.text_field :name, class: 'form-control' %>
 
-      <%= f.label :email, "Eメールアドレス" %>
+      <%= f.label :email, "E mail address" %>
       <%= f.text_field :email, class: 'form-control' %>
 
-      <%= f.label :address, "住所(都道府県名から)" %>
+      <%= f.label :address, "Address(from prefecture)" %>
       <%= f.text_field :address, class: 'form-control' %>
 
-      <%= f.label :password, "パスワード" %>
+      <%= f.label :password, "Password" %>
       <%= f.password_field :password, class: 'form-control' %>
 
-      <%= f.label :password_confirmation, "パスワード(確認)" %>
+      <%= f.label :password_confirmation, "Password(confirmation)" %>
       <%= f.password_field :password_confirmation, class: 'form-control' %>
 
-      <%= f.submit "上記内容に更新", class: "btn btn-primary" %>
+      <%= f.submit "Update following above", class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>
